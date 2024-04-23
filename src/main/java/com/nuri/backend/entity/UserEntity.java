@@ -14,11 +14,9 @@ public class UserEntity {
     private Long id;
 
     @Column
-    private String userId;
     private String userName;
-    private String oauthToken;
-    private String jwtToken;
-    private String jwtRefreshToken;
+    private String password;
+    private String role;
 
     
 }
