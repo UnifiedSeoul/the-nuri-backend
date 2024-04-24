@@ -1,6 +1,10 @@
 # Created by https://www.toptal.com/developers/gitignore/api/windows,macos,intellij,intellij+all,intellij+iml,eclipse,maven,gradle,java
 # Edit at https://www.toptal.com/developers/gitignore?templates=windows,macos,intellij,intellij+all,intellij+iml,eclipse,maven,gradle,java
 
+### Profile files ###
+src/main/resources/application-prod.yml
+src/main/resources/application-secret.yml
+
 ### Eclipse ###
 .metadata
 bin/
