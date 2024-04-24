@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+  <header>
+    <resultCode>00</resultCode>
+    <resultMsg>NORMAL SERVICE.</resultMsg>
+  </header>
+  <body>
+    <items>
+      <item>
+        <acptMthdCd>CM0804</acptMthdCd>
+        <age>60</age>
+        <clerk>이상구</clerk>
+        <clerkContt>031-263-1234</clerkContt>
+        <clltPrnnum>1</clltPrnnum>
+        <createDy>2024-04-23T01:00:27+09:00</createDy>
+        <etcItm>(준)고령자(50세이상), 고용촉진장려금대상자, 장애인 고급기계설비유지관리자 선임시 월급여 4,000,000원 지급</etcItm>
+        <frAcptDd>20240422</frAcptDd>
+        <homepage>baresys.com</homepage>
+        <jobId>K15113244404220059</jobId>
+        <lnkStmId>B</lnkStmId>
+        <organYn>N</organYn>
+        <plDetAddr>164 경기도 용인시 37, 211호 </plDetAddr>
+        <plbizNm>바른템 주식회사</plbizNm>
+        <repr>이상구</repr>
+        <stmId>A</stmId>
+        <toAcptDd>20240507</toAcptDd>
+        <updDy>2024-04-23T01:00:28+09:00</updDy>
+        <wantedAuthNo>K151132404220059</wantedAuthNo>
+        <wantedTitle>미사 하우 엘타워 지팀장 구인</wantedTitle>
+      </item>
+    </items>
+    <numOfRows>10</numOfRows>
+    <pageNo>1</pageNo>
+    <totalCount>1</totalCount>
+  </body>
+</response>
