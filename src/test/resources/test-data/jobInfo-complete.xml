@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+  <header>
+    <resultCode>00</resultCode>
+    <resultMsg>NORMAL SERVICE.</resultMsg>
+  </header>
+  <body>
+    <items>
+      <item>
+        <acptMthd>방문</acptMthd>
+        <deadline>접수중</deadline>
+        <emplymShp>CM0105</emplymShp>
+        <emplymShpNm>CM0105</emplymShpNm>
+        <frDd>20240419</frDd>
+        <jobId>KJLN002404190001</jobId>
+        <oranNm>엘스(유)</oranNm>
+        <organYn>N</organYn>
+        <recrtTitle>미화원 채용합니다.(장애인등록증 또는 장애인복지카드 소지자 우대)</recrtTitle>
+        <stmId>B</stmId>
+        <stmNm>워크넷</stmNm>
+        <toDd>20240506</toDd>
+        <workPlc>010200</workPlc>
+        <workPlcNm>강원 춘천시</workPlcNm>
+      </item>
+      <item>
+        <acptMthd>방문</acptMthd>
+        <deadline>접수중</deadline>
+        <emplymShp>CM0105</emplymShp>
+        <emplymShpNm>CM0105</emplymShpNm>
+        <frDd>20240419</frDd>
+        <jobId>K120612404190051</jobId>
+        <oranNm>성발（주）</oranNm>
+        <organYn>N</organYn>
+        <recrtTitle>캐널파크 아파트 경비원 모집 (인천시 서구)</recrtTitle>
+        <stmId>B</stmId>
+        <stmNm>워크넷</stmNm>
+        <toDd>20240503</toDd>
+        <workPlc>010080</workPlc>
+        <workPlcNm>인천 서구</workPlcNm>
+      </item>
+    </items>
+    <numOfRows>2</numOfRows>
+    <pageNo>1</pageNo>
+    <totalCount>754399</totalCount>
+  </body>
+</response>

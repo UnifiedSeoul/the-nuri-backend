@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response>
+  <header>
+    <resultCode>00</resultCode>
+    <resultMsg>NORMAL SERVICE.</resultMsg>
+  </header>
+  <body>
+    <items>
+      <item>
+        <acptMthdCd>CM0804</acptMthdCd>
+        <age>60</age>
+        <clerk>이필</clerk>
+        <clerkContt>02-1234-5678</clerkContt>
+        <clltPrnnum>1</clltPrnnum>
+        <createDy>2024-02-17T01:00:32+09:00</createDy>
+        <etcItm>(준)고령자(50세이상), 고용촉진장려금대상자, 보훈취업지원대상자, 장애인 </etcItm>
+        <frAcptDd>20240216</frAcptDd>
+        <jobId>KJAN002404404</jobId>
+        <lnkStmId>B</lnkStmId>
+        <organYn>N</organYn>
+        <plDetAddr>07275 영등포로 21 (양평동2가)</plDetAddr>
+        <plbizNm>엘스(유)</plbizNm>
+        <repr>이필</repr>
+        <stmId>A</stmId>
+        <toAcptDd>20240303</toAcptDd>
+        <updDy>2024-03-03T01:02:57+09:00</updDy>
+        <wantedAuthNo>KJAN002404404</wantedAuthNo>
+        <wantedTitle>아파트 경비원 채용합니다.(장애인등록증 또는 장애인복지카드 소지자 우대)</wantedTitle>
+      </item>
+    </items>
+    <numOfRows>10</numOfRows>
+    <pageNo>1</pageNo>
+    <totalCount>1</totalCount>
+  </body>
+</response>
