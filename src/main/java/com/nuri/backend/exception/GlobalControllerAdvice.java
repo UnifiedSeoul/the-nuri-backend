@@ -15,4 +15,15 @@ public class GlobalControllerAdvice {
                 .status(HttpStatus.BAD_REQUEST)
                 .body(e.getMessage());
     }
+
+    @ExceptionHandler
+    public ResponseEntity<?> stockExceptionHandler(JobInfoException e) {
+
+        ErrorResponse errorResponse = new ErrorResponse(e.getStatus(),
+                e.getStatus().value(), e.getMessage());
+
+        return ResponseEntity
+                .status(e.getStatus())
+                .body(errorResponse);
+    }
 }

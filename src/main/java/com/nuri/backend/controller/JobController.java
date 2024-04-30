@@ -1,6 +1,6 @@
 package com.nuri.backend.controller;
 
-import com.nuri.backend.domain.JobInfo;
+import com.nuri.backend.dto.JobInfoDto;
 import com.nuri.backend.dto.api.job.JobInfoTotalResponse;
 import com.nuri.backend.service.JobInfoSchedulingService;
 import com.nuri.backend.service.JobInfoService;
@@ -18,21 +18,22 @@ public class JobController {
     private final JobInfoService jobInfoService;
     private final JobInfoSchedulingService jobInfoSchedulingService;
 
-    @GetMapping("/test")
+    @GetMapping("/api/test")
     public ResponseEntity<JobInfoTotalResponse> testJob() {
         JobInfoTotalResponse jobInfoTotalResponse = jobInfoSchedulingService.fetchJobs();
         return ResponseEntity.ok(jobInfoTotalResponse);
     }
 
-    @GetMapping("/jobs")
-    public ResponseEntity<List<JobInfo>> getJobs() {
-        List<JobInfo> jobInfoList = jobInfoService.getAllJobs();
+    @GetMapping("/api/jobs")
+    public ResponseEntity<List<JobInfoDto>> getJobs() {
+        List<JobInfoDto> jobInfoList = jobInfoService.getAllJobs();
         return ResponseEntity.ok(jobInfoList);
     }
 
-    @GetMapping("/job/{jobId}")
-    public ResponseEntity<JobInfo> getJobs(@PathVariable("jobId") String jobId) {
-        JobInfo jobByJobId = jobInfoService.getJobByJobId(jobId);
-        return ResponseEntity.ok(jobByJobId);
+    @GetMapping("/api/job/{jobId}")
+    public ResponseEntity<JobInfoDto> getJobs(@PathVariable("jobId") String jobId) {
+
+        JobInfoDto jobInfoDto = jobInfoService.getJobByJobId(jobId);
+        return ResponseEntity.ok(jobInfoDto);
     }
 }
