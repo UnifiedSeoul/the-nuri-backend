@@ -1,5 +1,6 @@
 package com.nuri.backend.config;
 
+import com.nuri.backend.filter.JWTFilter;
 import com.nuri.backend.filter.LoginFilter;
 import com.nuri.backend.util.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -56,6 +57,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login","/","/join").permitAll()
                         .anyRequest().authenticated());
+        httpSecurity
+                .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         httpSecurity
                 .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
         httpSecurity

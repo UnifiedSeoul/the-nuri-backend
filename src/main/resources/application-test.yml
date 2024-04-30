@@ -13,3 +13,7 @@ spring:
           auto: update
         format_sql: true
     database-platform: org.hibernate.dialect.H2Dialect
+
+
+  jwt:
+    secret: vmfhaltmskdlstkfkdgodyroqkfwkdbalroqkfwkdbalaaaaaaaaaaaaaaaabbbbb
