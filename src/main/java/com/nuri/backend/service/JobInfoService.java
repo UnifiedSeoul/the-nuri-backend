@@ -1,24 +1,30 @@
 package com.nuri.backend.service;
 
 import com.nuri.backend.domain.JobInfo;
+
 import com.nuri.backend.entity.UserJobInfo;
 import com.nuri.backend.repository.JobInfoRepository;
 
 import java.util.ArrayList;
+import com.nuri.backend.dto.JobInfoDto;
+import com.nuri.backend.exception.ErrorCode;
+import com.nuri.backend.exception.JobInfoException;
+
+
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.nuri.backend.repository.UserJobInfoRepository;
 import com.nuri.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
+
+import org.springframework.data.domain.Pageable;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import javax.print.attribute.standard.JobName;
 
 @Service
 @RequiredArgsConstructor
@@ -31,20 +37,50 @@ public class JobInfoService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<JobInfo> getAllJobs() {
-        return jobInfoRepository.findAll();
+    public List<JobInfoDto> getAllJobs() {
+        List<JobInfoDto> jobInfoList = jobInfoRepository.findAll().stream()
+                .map(JobInfoDto::from)
+                .toList();
+
+        return jobInfoList;
     }
 
     @Transactional(readOnly = true)
-    public JobInfo getJobByJobId(String jobId) {
-        return jobInfoRepository.findById(jobId).orElseThrow();
+    public List<JobInfoDto> getPageJobs(Pageable pageable) {
+        List<JobInfoDto> jobInfoList = jobInfoRepository.findAll(pageable).stream()
+                .map(JobInfoDto::from)
+                .toList();
+
+
+        return jobInfoList;
+    }
+
+    @Transactional(readOnly = true)
+    public JobInfoDto getJobByJobId(String jobId) {
+        JobInfo jobInfo = jobInfoRepository.findById(jobId)
+                .orElseThrow(() -> new JobInfoException(ErrorCode.INVALID_JOB_ID));
+        return JobInfoDto.from(jobInfo);
+    }
+
+    @Transactional(readOnly = true)
+    public List<JobInfoDto> getJobsByDistance(String x, String y, String distance) {
+
+        double longitude = Double.parseDouble(x);
+        double latitude = Double.parseDouble(y);
+        double dist = Double.parseDouble(distance);
+        double distanceInDegrees = dist / 111.32;
+
+        return jobInfoRepository.findJobsWithinDistance(longitude, latitude, distanceInDegrees)
+                .stream()
+                .map(JobInfoDto::from)
+                .toList();
     }
 
 
     @Transactional(readOnly = true)
-    public List<JobInfo> getCustomJob(String username){
+    public List<JobInfoDto> getCustomJob(String username){
         List<UserJobInfo> userJobs = userJobInfoRepository.findAllByUserId(userRepository.findByUsername(username).getId());
-        List<JobInfo> customJob = new ArrayList<>();
+        List<JobInfoDto> customJob = new ArrayList<>();
 
         RestTemplate restTemplate = new RestTemplate();
         String baseUrl = "http://external-server.com/api/jobs";
@@ -65,8 +101,8 @@ public class JobInfoService {
         List<String> jobIdList = response.getBody();
 
         for(String jobId : jobIdList){
-            JobInfo jobInfo= jobInfoRepository.findById(jobId).orElseThrow();
-            customJob.add(jobInfo);
+            JobInfoDto jobInfoDto= JobInfoDto.from(jobInfoRepository.findById(jobId).orElseThrow());
+            customJob.add(jobInfoDto);
         }
 
         return customJob;
