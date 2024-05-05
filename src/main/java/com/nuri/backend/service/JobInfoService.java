@@ -5,8 +5,10 @@ import com.nuri.backend.dto.JobInfoDto;
 import com.nuri.backend.exception.ErrorCode;
 import com.nuri.backend.exception.JobInfoException;
 import com.nuri.backend.repository.JobInfoRepository;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +23,16 @@ public class JobInfoService {
         List<JobInfoDto> jobInfoList = jobInfoRepository.findAll().stream()
                 .map(JobInfoDto::from)
                 .toList();
+
+        return jobInfoList;
+    }
+
+    @Transactional(readOnly = true)
+    public List<JobInfoDto> getPageJobs(Pageable pageable) {
+        List<JobInfoDto> jobInfoList = jobInfoRepository.findAll(pageable).stream()
+                .map(JobInfoDto::from)
+                .toList();
+
 
         return jobInfoList;
     }
