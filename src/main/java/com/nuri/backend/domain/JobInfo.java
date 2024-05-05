@@ -3,6 +3,7 @@ package com.nuri.backend.domain;
 import com.nuri.backend.domain.embeddables.Acceptance;
 import com.nuri.backend.domain.embeddables.Company;
 import com.nuri.backend.domain.embeddables.Employment;
+import com.nuri.backend.domain.embeddables.GeoLocation;
 import com.nuri.backend.domain.embeddables.LinkSystem;
 import com.nuri.backend.domain.embeddables.Place;
 import com.nuri.backend.domain.enums.EmploymentType;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 @Builder
-@Table(name = "job")
+@Table(name = "jobInfo")
 @NoArgsConstructor
 public class JobInfo {
 
@@ -41,6 +42,9 @@ public class JobInfo {
     @Embedded
     private Place place;
 
+    @Embedded
+    private GeoLocation geoLocation;
+
     private String deadlineStatus; // 마감 유무, ex) 마감, 접수중
 
     private String detailedContents; // 상세내용
@@ -49,9 +53,8 @@ public class JobInfo {
 
     private String recruitmentTitle; // 채용제목
 
-
     protected JobInfo(String jobId, Acceptance acceptance, Company company, Employment employment,
-            LinkSystem linkSystem, Place place, String deadlineStatus, String detailedContents,
+            LinkSystem linkSystem, Place place, GeoLocation geoLocation, String deadlineStatus, String detailedContents,
             String placeDetailAddress, String recruitmentTitle) {
         this.jobId = jobId;
         this.acceptance = acceptance;
@@ -59,13 +62,14 @@ public class JobInfo {
         this.employment = employment;
         this.linkSystem = linkSystem;
         this.place = place;
+        this.geoLocation = geoLocation;
         this.deadlineStatus = deadlineStatus;
         this.detailedContents = detailedContents;
         this.placeDetailAddress = placeDetailAddress;
         this.recruitmentTitle = recruitmentTitle;
     }
 
-    public static JobInfo of(final JobInfoResponse jobInfoResponse, final JobDetailResponse jobDetailResponse) {
+    public static JobInfo of(final JobInfoResponse jobInfoResponse, final JobDetailResponse jobDetailResponse, final GeoLocation geoLocation) {
 
         Acceptance acceptance = new Acceptance(
                 jobInfoResponse.getAcceptanceMethodCode(),
@@ -111,12 +115,11 @@ public class JobInfo {
                 .employment(employment)
                 .linkSystem(linkSystem)
                 .place(place)
+                .geoLocation(geoLocation)
                 .deadlineStatus(jobInfoResponse.getDeadlineStatus())
                 .detailedContents(jobDetailResponse.getDetailedContents())
                 .placeDetailAddress(jobDetailResponse.getPlaceDetailAddress())
                 .recruitmentTitle(jobDetailResponse.getRecruitmentTitle())
                 .build();
     }
-
-
 }

@@ -1,6 +1,8 @@
 package com.nuri.backend.service;
 
 import com.nuri.backend.domain.JobInfo;
+import com.nuri.backend.domain.embeddables.GeoLocation;
+import com.nuri.backend.dto.JobInfoDto;
 import com.nuri.backend.dto.api.job.JobDetailResponse;
 import com.nuri.backend.dto.api.job.JobDetailTotalResponse;
 import com.nuri.backend.dto.api.job.JobInfoResponse;
@@ -22,8 +24,9 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 public class JobInfoSchedulingService {
 
-    private final JobInfoRepository jobInfoRepository;
     private final RestClient restClient;
+    private final JobInfoRepository jobInfoRepository;
+    private final MapService mapService;
 
     @Value("${public-data.job-list-url}")
     private String jobListUrl;
@@ -34,7 +37,7 @@ public class JobInfoSchedulingService {
     @Value("${public-data.service-key}")
     private String serviceKey;
 
-    public JobInfoTotalResponse fetchJobs() {
+    public List<JobInfoDto> fetchJobs() {
 
         URI jobListUri = UriComponentsBuilder
                 .fromUriString(jobListUrl)
@@ -42,7 +45,7 @@ public class JobInfoSchedulingService {
                 .queryParam("pageNo","{pageNo}")
                 .queryParam("numOfRows","{numOfRows}")
                 .encode()
-                .buildAndExpand(serviceKey, 1, 10)
+                .buildAndExpand(serviceKey, 1, 500)
                 .toUri();
 
         JobInfoTotalResponse jobInfoTotalResponse = restClient.get()
@@ -74,11 +77,15 @@ public class JobInfoSchedulingService {
                     .body(JobDetailTotalResponse.class);
 
             JobDetailResponse jobDetailResponse = jobDetailTotalResponse.getBody().getJobDetailList().get(0);
-            JobInfo jobInfo = JobInfo.of(jobInfoResponse, jobDetailResponse);
+            GeoLocation geoLocation = mapService.getGeoLocationByApi(
+                    jobDetailResponse.getPlaceDetailAddress());
+            JobInfo jobInfo = JobInfo.of(jobInfoResponse, jobDetailResponse, geoLocation);
             jobInfoList.add(jobInfo);
         }
         jobInfoRepository.saveAll(jobInfoList);
         log.info("jobInfoList.size() = {}", jobInfoList.size());
-        return jobInfoTotalResponse;
+        return jobInfoList.stream()
+                .map(JobInfoDto::from)
+                .toList();
     }
 }
