@@ -1,6 +1,6 @@
 package com.nuri.backend.controller;
 
-import com.nuri.backend.dto.JoinDTO;
+import com.nuri.backend.dto.api.login.JoinDTO;
 import com.nuri.backend.service.JoinService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;

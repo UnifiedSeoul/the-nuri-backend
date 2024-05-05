@@ -7,9 +7,10 @@ import com.nuri.backend.service.JobInfoService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import javax.print.attribute.standard.JobName;
 
 @RestController
 @RequiredArgsConstructor
@@ -34,5 +35,14 @@ public class JobController {
     public ResponseEntity<JobInfo> getJobs(@PathVariable("jobId") String jobId) {
         JobInfo jobByJobId = jobInfoService.getJobByJobId(jobId);
         return ResponseEntity.ok(jobByJobId);
+    }
+
+    @GetMapping("/jobs/custom")
+    public ResponseEntity<JobInfo> getCustomJob(Authentication authentication){
+        String username;
+        if(authentication != null && authentication.isAuthenticated()){
+            username = authentication.getName();
+
+        }
     }
 }

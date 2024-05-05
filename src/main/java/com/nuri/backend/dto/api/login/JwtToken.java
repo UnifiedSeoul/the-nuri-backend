@@ -1,4 +1,4 @@
-package com.nuri.backend.dto;
+package com.nuri.backend.dto.api.login;
 
 
 import lombok.AllArgsConstructor;
