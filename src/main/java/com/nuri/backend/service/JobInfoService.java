@@ -30,7 +30,6 @@ public class JobInfoService {
 
     private final UserRepository userRepository;
 
-    private final WebClient
     @Transactional(readOnly = true)
     public List<JobInfo> getAllJobs() {
         return jobInfoRepository.findAll();
