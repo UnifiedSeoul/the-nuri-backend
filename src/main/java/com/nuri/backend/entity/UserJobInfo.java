@@ -20,10 +20,10 @@ public class UserJobInfo {
     private Long childId;
 
     @ManyToOne
-    @JoinColumn(name = "id", referencedColumnName = "id")
+    @JoinColumn(name = "userId")
     UserEntity user;
 
     private String jobPlace; //근무처
-    private String jobSpecific; // 상세 근무 내용
+    private String jobSpecific; //상세 근무 내용
 
 }

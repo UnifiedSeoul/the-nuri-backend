@@ -43,7 +43,7 @@ public class JobInfoService {
 
     @Transactional(readOnly = true)
     public List<JobInfo> getCustomJob(String username){
-        List<UserJobInfo> userJobs = userJobInfoRepository.findAllById(userRepository.findByUsername(username).getId());
+        List<UserJobInfo> userJobs = userJobInfoRepository.findAllByUserId(userRepository.findByUsername(username).getId());
         List<JobInfo> customJob = new ArrayList<>();
 
         RestTemplate restTemplate = new RestTemplate();
@@ -53,7 +53,6 @@ public class JobInfoService {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<List<UserJobInfo>> request = new HttpEntity<>(userJobs, headers);
-
 
         // HttpEntity 객체 생성 (사용자 작업 정보 포함)
         ResponseEntity<List<String>> response = restTemplate.exchange(

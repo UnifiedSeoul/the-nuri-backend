@@ -4,6 +4,8 @@ import com.nuri.backend.domain.JobInfo;
 import com.nuri.backend.dto.api.job.JobInfoTotalResponse;
 import com.nuri.backend.service.JobInfoSchedulingService;
 import com.nuri.backend.service.JobInfoService;
+
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -38,11 +40,14 @@ public class JobController {
     }
 
     @GetMapping("/jobs/custom")
-    public ResponseEntity<JobInfo> getCustomJob(Authentication authentication){
+    public ResponseEntity<List<JobInfo>> getCustomJob(Authentication authentication){
         String username;
+        List<JobInfo> jobCustomInfoList =  new ArrayList<>();
         if(authentication != null && authentication.isAuthenticated()){
             username = authentication.getName();
-
+            jobCustomInfoList = jobInfoService.getCustomJob(username);
         }
+
+        return ResponseEntity.ok(jobCustomInfoList);
     }
 }
