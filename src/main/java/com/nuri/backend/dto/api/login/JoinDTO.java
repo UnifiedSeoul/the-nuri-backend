@@ -12,5 +12,5 @@ public class JoinDTO {
 
     private String username;
     private String password;
-    private List<UserJobInfoDTO> userJobInfoDTOList;
+    private List<UserJobInfoDTO> userJobInfoList;
 }

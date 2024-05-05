@@ -2,6 +2,7 @@ package com.nuri.backend.service;
 
 import com.nuri.backend.domain.JobInfo;
 
+import com.nuri.backend.dto.api.job.JobCustomResponse;
 import com.nuri.backend.entity.UserJobInfo;
 import com.nuri.backend.repository.JobInfoRepository;
 
@@ -17,7 +18,6 @@ import com.nuri.backend.repository.UserJobInfoRepository;
 import com.nuri.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 
-import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 
 import org.springframework.data.domain.Pageable;
@@ -83,7 +83,7 @@ public class JobInfoService {
         List<JobInfoDto> customJob = new ArrayList<>();
 
         RestTemplate restTemplate = new RestTemplate();
-        String baseUrl = "http://external-server.com/api/jobs";
+        String baseUrl = "${custom.url}";
 
         // HttpHeaders 객체 생성 및 설정
         HttpHeaders headers = new HttpHeaders();
@@ -91,14 +91,14 @@ public class JobInfoService {
         HttpEntity<List<UserJobInfo>> request = new HttpEntity<>(userJobs, headers);
 
         // HttpEntity 객체 생성 (사용자 작업 정보 포함)
-        ResponseEntity<List<String>> response = restTemplate.exchange(
+        ResponseEntity<JobCustomResponse> response = restTemplate.exchange(
                 baseUrl,
                 HttpMethod.POST,
                 request,
-                new ParameterizedTypeReference<List<String>>() {}
+                JobCustomResponse.class
         );
 
-        List<String> jobIdList = response.getBody();
+        List<String> jobIdList = response.getBody().getRecommendedjobid();
 
         for(String jobId : jobIdList){
             JobInfoDto jobInfoDto= JobInfoDto.from(jobInfoRepository.findById(jobId).orElseThrow());
