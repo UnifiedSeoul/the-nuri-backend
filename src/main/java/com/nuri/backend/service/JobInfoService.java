@@ -31,4 +31,18 @@ public class JobInfoService {
                 .orElseThrow(() -> new JobInfoException(ErrorCode.INVALID_JOB_ID));
         return JobInfoDto.from(jobInfo);
     }
+
+    @Transactional(readOnly = true)
+    public List<JobInfoDto> getJobsByDistance(String x, String y, String distance) {
+
+        double longitude = Double.parseDouble(x);
+        double latitude = Double.parseDouble(y);
+        double dist = Double.parseDouble(distance);
+        double distanceInDegrees = dist / 111.32;
+
+        return jobInfoRepository.findJobsWithinDistance(longitude, latitude, distanceInDegrees)
+                .stream()
+                .map(JobInfoDto::from)
+                .toList();
+    }
 }
