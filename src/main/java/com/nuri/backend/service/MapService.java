@@ -35,6 +35,9 @@ public class MapService {
     @Value("${map.geo-path}")
     private String geoPath;
 
+    @Value("${map.find-path}")
+    private String findPath;
+
     private static final GeometryFactory geometryFactory = new GeometryFactory();
 
     public GeoLocation getGeoLocationByApi(String fullAddress) {
@@ -51,6 +54,32 @@ public class MapService {
         address.put(addressWithoutPostalCode, geoLocation);
         return geoLocation;
     }
+
+    public String getPath(String start, String goal, String option) {
+
+        URI findPathUri = UriComponentsBuilder
+                .fromUriString(mapUrl)
+                .path(findPath)
+                .queryParam("start", "{start}")
+                .queryParam("goal", "{end}")
+                .queryParam("option", "{option}")
+                .encode()
+                .buildAndExpand(start, goal, option)
+                .toUri();
+
+        ResponseEntity<String> entity = restClient.get()
+                .uri(findPathUri)
+                .headers(headers -> {
+                    headers.add("X-NCP-APIGW-API-KEY-ID", clientId);
+                    headers.add("X-NCP-APIGW-API-KEY", clientSecret);
+                })
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .toEntity(String.class);
+
+        return entity.getBody();
+    }
+
 
     private GeoLocation getGeoLocation(ResponseEntity<String> geoInfo) {
         JSONObject obj = new JSONObject(geoInfo.getBody());
@@ -79,13 +108,12 @@ public class MapService {
     }
 
     private URI getMapGeoUri(String addressWithoutPostalCode) {
-        URI mapGeoUri = UriComponentsBuilder
+        return UriComponentsBuilder
                 .fromUriString(mapUrl)
                 .path(geoPath)
                 .queryParam("query", "{query}")
                 .encode()
                 .buildAndExpand(addressWithoutPostalCode)
                 .toUri();
-        return mapGeoUri;
     }
 }
