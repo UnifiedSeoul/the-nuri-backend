@@ -39,7 +39,68 @@ public class JobInfoSchedulingService {
 
     public List<JobInfoDto> fetchJobs() {
 
-        URI jobListUri = UriComponentsBuilder
+        URI jobListUri = getJobListUri();
+        JobInfoTotalResponse jobInfoTotalResponse = getJobInfoTotalResponse(jobListUri);
+//        assert jobListResponseDto != null;
+        List<JobInfoResponse> jobList = jobInfoTotalResponse.getBody().getJobList();
+
+        List<JobInfo> jobInfoList = new ArrayList<>();
+
+        for (JobInfoResponse jobInfoResponse : jobList) {
+
+            String jobId = jobInfoResponse.getJobId();
+            log.info("jobInfoDto = {}", jobInfoResponse.getCompanyName());
+            URI jobDetailInfoUri = getJobDetailInfoUri(jobId);
+
+            JobDetailTotalResponse jobDetailTotalResponse = getJobDetailTotalResponse(jobDetailInfoUri);
+
+            JobDetailResponse jobDetailResponse = jobDetailTotalResponse.getBody().getJobDetailList().get(0);
+
+            // 필터링
+            if (!jobDetailResponse.getPlaceDetailAddress().startsWith("0")) continue;
+
+            GeoLocation geoLocation = mapService.getGeoLocationByApi(jobDetailResponse.getPlaceDetailAddress());
+            if (geoLocation == null) continue;
+
+            jobInfoList.add(JobInfo.of(jobInfoResponse, jobDetailResponse, geoLocation));
+        }
+
+        jobInfoRepository.saveAll(jobInfoList);
+
+        log.info("jobInfoList.size() = {}", jobInfoList.size());
+        return jobInfoList.stream()
+                .map(JobInfoDto::from)
+                .toList();
+    }
+
+    private JobDetailTotalResponse getJobDetailTotalResponse(URI jobDetailInfoUri) {
+        return restClient.get()
+                .uri(jobDetailInfoUri)
+                .accept(MediaType.APPLICATION_XML)
+                .retrieve()
+                .body(JobDetailTotalResponse.class);
+    }
+
+    private URI getJobDetailInfoUri(String jobId) {
+        return UriComponentsBuilder
+                .fromUriString(jobDetailUrl)
+                .queryParam("serviceKey", "{serviceKey}")
+                .queryParam("id", "{jobId}")
+                .encode()
+                .buildAndExpand(serviceKey, jobId)
+                .toUri();
+    }
+
+    private JobInfoTotalResponse getJobInfoTotalResponse(URI jobListUri) {
+        return restClient.get()
+                .uri(jobListUri)
+                .accept(MediaType.APPLICATION_XML)
+                .retrieve()
+                .body(JobInfoTotalResponse.class);
+    }
+
+    private URI getJobListUri() {
+        return UriComponentsBuilder
                 .fromUriString(jobListUrl)
                 .queryParam("serviceKey", "{serviceKey}")
                 .queryParam("pageNo","{pageNo}")
@@ -47,45 +108,5 @@ public class JobInfoSchedulingService {
                 .encode()
                 .buildAndExpand(serviceKey, 1, 500)
                 .toUri();
-
-        JobInfoTotalResponse jobInfoTotalResponse = restClient.get()
-                .uri(jobListUri)
-                .accept(MediaType.APPLICATION_XML)
-                .retrieve()
-                .body(JobInfoTotalResponse.class);
-
-//        assert jobListResponseDto != null;
-        List<JobInfoResponse> jobList = jobInfoTotalResponse.getBody().getJobList();
-
-        List<JobInfo> jobInfoList = new ArrayList<>();
-        for (JobInfoResponse jobInfoResponse : jobList) {
-
-            String jobId = jobInfoResponse.getJobId();
-            log.info("jobInfoDto = {}", jobInfoResponse.getCompanyName());
-            URI jobDetailInfoUri = UriComponentsBuilder
-                    .fromUriString(jobDetailUrl)
-                    .queryParam("serviceKey", "{serviceKey}")
-                    .queryParam("id", "{jobId}")
-                    .encode()
-                    .buildAndExpand(serviceKey, jobId)
-                    .toUri();
-
-            JobDetailTotalResponse jobDetailTotalResponse = restClient.get()
-                    .uri(jobDetailInfoUri)
-                    .accept(MediaType.APPLICATION_XML)
-                    .retrieve()
-                    .body(JobDetailTotalResponse.class);
-
-            JobDetailResponse jobDetailResponse = jobDetailTotalResponse.getBody().getJobDetailList().get(0);
-            GeoLocation geoLocation = mapService.getGeoLocationByApi(
-                    jobDetailResponse.getPlaceDetailAddress());
-            JobInfo jobInfo = JobInfo.of(jobInfoResponse, jobDetailResponse, geoLocation);
-            jobInfoList.add(jobInfo);
-        }
-        jobInfoRepository.saveAll(jobInfoList);
-        log.info("jobInfoList.size() = {}", jobInfoList.size());
-        return jobInfoList.stream()
-                .map(JobInfoDto::from)
-                .toList();
     }
 }
