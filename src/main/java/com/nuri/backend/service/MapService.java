@@ -2,6 +2,8 @@ package com.nuri.backend.service;
 
 import com.nuri.backend.domain.embeddables.GeoLocation;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
@@ -19,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class MapService {
 
     private final RestClient restClient;
+    private static Map<String, GeoLocation> address = new HashMap<>();
 
     @Value("${map.client-id}")
     private String clientId;
@@ -38,10 +41,15 @@ public class MapService {
 
         String addressWithoutPostalCode = fullAddress.replaceFirst("^\\d{5}\\s+", "");
 
+        if (address.containsKey(addressWithoutPostalCode)) {
+            return address.get(addressWithoutPostalCode);
+        }
         URI mapGeoUri = getMapGeoUri(addressWithoutPostalCode);
         ResponseEntity<String> geoInfo = getMapGeoEntity(mapGeoUri);
 
-        return getGeoLocation(geoInfo);
+        GeoLocation geoLocation = getGeoLocation(geoInfo);
+        address.put(addressWithoutPostalCode, geoLocation);
+        return geoLocation;
     }
 
     private GeoLocation getGeoLocation(ResponseEntity<String> geoInfo) {
