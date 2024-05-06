@@ -22,8 +22,11 @@ public class JobInfoDto {
     private String companyStaffContact; // 담당자 연락처
     private String companyHomePageUrl; // 홈페이지 URL
     private String employmentShape; // 고용 형태
+    private String etcInfo;
     private String longitude;
     private String latitude;
+    private int viewCount;
+    private int homePageVisitCount;
 
     public static JobInfoDto from(JobInfo jobInfo) {
         return JobInfoDto.builder()
@@ -41,9 +44,11 @@ public class JobInfoDto {
                 .companyStaffContact(jobInfo.getCompany().getCompanyStaffContact())
                 .companyHomePageUrl(jobInfo.getCompany().getCompanyHomePageUrl())
                 .employmentShape(jobInfo.getEmployment().getEmploymentShape())
+                .etcInfo(jobInfo.getEmployment().getEtcItem())
                 .longitude(jobInfo.getGeoLocation().getX())
                 .latitude(jobInfo.getGeoLocation().getY())
+                .viewCount(jobInfo.getViewCount())
+                .homePageVisitCount(jobInfo.getHomePageVisitCount())
                 .build();
     }
-
 }
