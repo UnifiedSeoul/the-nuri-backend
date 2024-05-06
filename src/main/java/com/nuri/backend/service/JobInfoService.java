@@ -1,27 +1,23 @@
 package com.nuri.backend.service;
 
 import com.nuri.backend.domain.JobInfo;
-
+import com.nuri.backend.dto.JobInfoDto;
 import com.nuri.backend.dto.api.job.JobCustomResponse;
 import com.nuri.backend.entity.UserJobInfo;
-import com.nuri.backend.repository.JobInfoRepository;
-
-import java.util.ArrayList;
-import com.nuri.backend.dto.JobInfoDto;
 import com.nuri.backend.exception.ErrorCode;
 import com.nuri.backend.exception.JobInfoException;
-
-
-import java.util.List;
-
+import com.nuri.backend.repository.JobInfoRepository;
 import com.nuri.backend.repository.UserJobInfoRepository;
 import com.nuri.backend.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
-
-import org.springframework.http.*;
-
 import org.springframework.data.domain.Pageable;
-
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -37,20 +33,10 @@ public class JobInfoService {
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
-    public List<JobInfoDto> getAllJobs() {
-        List<JobInfoDto> jobInfoList = jobInfoRepository.findAll().stream()
-                .map(JobInfoDto::from)
-                .toList();
-
-        return jobInfoList;
-    }
-
-    @Transactional(readOnly = true)
     public List<JobInfoDto> getPageJobs(Pageable pageable) {
         List<JobInfoDto> jobInfoList = jobInfoRepository.findAll(pageable).stream()
                 .map(JobInfoDto::from)
                 .toList();
-
 
         return jobInfoList;
     }
