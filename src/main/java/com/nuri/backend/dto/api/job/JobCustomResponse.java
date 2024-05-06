@@ -4,13 +4,13 @@ import java.util.List;
 
 public class JobCustomResponse {
 
-    private List<String> recommendedjobid;
+    private List<String> recommendJobId;
 
-    public List<String> getRecommendedjobid() {
-        return recommendedjobid;
+    public List<String> getRecommendJobId() {
+        return recommendJobId;
     }
 
-    public void setRecommendedjobid(List<String> recommendedjobid) {
-        this.recommendedjobid = recommendedjobid;
+    public void setRecommendJobId(List<String> recommendjobid) {
+        this.recommendJobId = recommendjobid;
     }
 }

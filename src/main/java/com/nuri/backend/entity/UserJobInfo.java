@@ -26,4 +26,5 @@ public class UserJobInfo {
     private String jobPlace; //근무처
     private String jobSpecific; //상세 근무 내용
 
+
 }

@@ -1,8 +1,12 @@
 package com.nuri.backend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nuri.backend.domain.JobInfo;
 
 import com.nuri.backend.dto.api.job.JobCustomResponse;
+import com.nuri.backend.dto.api.login.UserJobInfoDTO;
 import com.nuri.backend.entity.UserJobInfo;
 import com.nuri.backend.repository.JobInfoRepository;
 
@@ -79,30 +83,52 @@ public class JobInfoService {
 
     @Transactional(readOnly = true)
     public List<JobInfoDto> getCustomJob(String username){
-        List<UserJobInfo> userJobs = userJobInfoRepository.findAllByUserId(userRepository.findByUsername(username).getId());
+        List<UserJobInfoDTO> userJobs = userJobInfoRepository.findAllByUserId(userRepository.findByUsername(username).getId())
+                .stream()
+                .map(UserJobInfoDTO::from)
+                .toList();
+
         List<JobInfoDto> customJob = new ArrayList<>();
 
         RestTemplate restTemplate = new RestTemplate();
-        String baseUrl = "${custom.url}";
+        String baseUrl = "http://localhost:5000/api/recommend";
 
         // HttpHeaders 객체 생성 및 설정
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<List<UserJobInfo>> request = new HttpEntity<>(userJobs, headers);
+        HttpEntity<List<UserJobInfoDTO>> request = new HttpEntity<>(userJobs, headers);
 
         // HttpEntity 객체 생성 (사용자 작업 정보 포함)
-        ResponseEntity<JobCustomResponse> response = restTemplate.exchange(
+        ResponseEntity<String> response = restTemplate.exchange(
                 baseUrl,
                 HttpMethod.POST,
                 request,
-                JobCustomResponse.class
+                String.class
         );
 
-        List<String> jobIdList = response.getBody().getRecommendedjobid();
+        System.out.println(response.getBody());
 
-        for(String jobId : jobIdList){
-            JobInfoDto jobInfoDto= JobInfoDto.from(jobInfoRepository.findById(jobId).orElseThrow());
-            customJob.add(jobInfoDto);
+        String responseBody = response.getBody();
+        if (responseBody != null) {
+            ObjectMapper mapper = new ObjectMapper();
+            try {
+                JsonNode jsonNode = mapper.readTree(responseBody);
+                if (jsonNode.has("recommendJobId")) {
+                    JsonNode recommendJobIdNode = jsonNode.get("recommendJobId");
+                    if (recommendJobIdNode.isArray()) {
+                        List<String> jobIdList = new ArrayList<>();
+                        for (JsonNode node : recommendJobIdNode) {
+                            jobIdList.add(node.asText());
+                        }
+                        for (String jobId : jobIdList) {
+                            JobInfoDto jobInfoDto = JobInfoDto.from(jobInfoRepository.findById(jobId).orElseThrow());
+                            customJob.add(jobInfoDto);
+                        }
+                    }
+                }
+            } catch (JsonProcessingException e) {
+                e.printStackTrace();
+            }
         }
 
         return customJob;
