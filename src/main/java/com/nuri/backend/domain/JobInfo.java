@@ -16,6 +16,7 @@ import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
 @Getter
 @Entity
@@ -46,16 +47,19 @@ public class JobInfo {
     private GeoLocation geoLocation;
 
     private String deadlineStatus; // 마감 유무, ex) 마감, 접수중
-
     private String detailedContents; // 상세내용
-
     private String placeDetailAddress; // 상세 근무지 주소
-
     private String recruitmentTitle; // 채용제목
+
+    @ColumnDefault("0")
+    private int viewCount;
+
+    @ColumnDefault("0")
+    private int homePageVisitCount;
 
     protected JobInfo(String jobId, Acceptance acceptance, Company company, Employment employment,
             LinkSystem linkSystem, Place place, GeoLocation geoLocation, String deadlineStatus, String detailedContents,
-            String placeDetailAddress, String recruitmentTitle) {
+            String placeDetailAddress, String recruitmentTitle, int viewCount, int homepageVisitCount) {
         this.jobId = jobId;
         this.acceptance = acceptance;
         this.company = company;
@@ -67,6 +71,8 @@ public class JobInfo {
         this.detailedContents = detailedContents;
         this.placeDetailAddress = placeDetailAddress;
         this.recruitmentTitle = recruitmentTitle;
+        this.viewCount = viewCount;
+        this.homePageVisitCount = homepageVisitCount;
     }
 
     public static JobInfo of(final JobInfoResponse jobInfoResponse, final JobDetailResponse jobDetailResponse, final GeoLocation geoLocation) {
