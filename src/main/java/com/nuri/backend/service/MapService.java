@@ -5,6 +5,7 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
@@ -51,6 +52,7 @@ public class MapService {
         ResponseEntity<String> geoInfo = getMapGeoEntity(mapGeoUri);
 
         GeoLocation geoLocation = getGeoLocation(geoInfo);
+        if (geoLocation == null) return null;
         address.put(addressWithoutPostalCode, geoLocation);
         return geoLocation;
     }
@@ -83,7 +85,11 @@ public class MapService {
 
     private GeoLocation getGeoLocation(ResponseEntity<String> geoInfo) {
         JSONObject obj = new JSONObject(geoInfo.getBody());
-        JSONObject address = obj.getJSONArray("addresses").getJSONObject(0);
+        String status = obj.getString("status");
+        if (!status.equals("OK")) return null;
+        JSONArray addresses = obj.getJSONArray("addresses");
+        if (addresses.isEmpty()) return null;
+        JSONObject address = addresses.getJSONObject(0);
 
         String x = address.getString("x");
         String y = address.getString("y");
@@ -94,7 +100,7 @@ public class MapService {
 
     private ResponseEntity<String> getMapGeoEntity(URI mapGeoUri) {
 
-        ResponseEntity<String> entity = restClient.get()
+        return restClient.get()
                 .uri(mapGeoUri)
                 .headers(headers -> {
                     headers.add("X-NCP-APIGW-API-KEY-ID", clientId);
@@ -103,8 +109,6 @@ public class MapService {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .toEntity(String.class);
-
-        return entity;
     }
 
     private URI getMapGeoUri(String addressWithoutPostalCode) {

@@ -31,9 +31,7 @@ import org.springframework.web.client.RestTemplate;
 public class JobInfoService {
 
     private final JobInfoRepository jobInfoRepository;
-
     private final UserJobInfoRepository userJobInfoRepository;
-
     private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
@@ -45,11 +43,18 @@ public class JobInfoService {
         return jobInfoList;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public JobInfoDto getJobByJobId(String jobId) {
+        jobInfoRepository.incrementViewCount(jobId);
         JobInfo jobInfo = jobInfoRepository.findById(jobId)
                 .orElseThrow(() -> new JobInfoException(ErrorCode.INVALID_JOB_ID));
         return JobInfoDto.from(jobInfo);
+    }
+
+    @Transactional
+    public Void incrementHomePageViewCount(String jobId) {
+        jobInfoRepository.incrementHomePageViewCount(jobId);
+        return null;
     }
 
     @Transactional(readOnly = true)
