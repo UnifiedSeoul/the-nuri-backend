@@ -2,6 +2,8 @@ package com.nuri.backend.service;
 
 import com.nuri.backend.domain.embeddables.GeoLocation;
 import java.net.URI;
+import java.util.HashMap;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
 import org.locationtech.jts.geom.Coordinate;
@@ -19,6 +21,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 public class MapService {
 
     private final RestClient restClient;
+    private static Map<String, GeoLocation> address = new HashMap<>();
 
     @Value("${map.client-id}")
     private String clientId;
@@ -32,17 +35,51 @@ public class MapService {
     @Value("${map.geo-path}")
     private String geoPath;
 
+    @Value("${map.find-path}")
+    private String findPath;
+
     private static final GeometryFactory geometryFactory = new GeometryFactory();
 
     public GeoLocation getGeoLocationByApi(String fullAddress) {
 
         String addressWithoutPostalCode = fullAddress.replaceFirst("^\\d{5}\\s+", "");
 
+        if (address.containsKey(addressWithoutPostalCode)) {
+            return address.get(addressWithoutPostalCode);
+        }
         URI mapGeoUri = getMapGeoUri(addressWithoutPostalCode);
         ResponseEntity<String> geoInfo = getMapGeoEntity(mapGeoUri);
 
-        return getGeoLocation(geoInfo);
+        GeoLocation geoLocation = getGeoLocation(geoInfo);
+        address.put(addressWithoutPostalCode, geoLocation);
+        return geoLocation;
     }
+
+    public String getPath(String start, String goal, String option) {
+
+        URI findPathUri = UriComponentsBuilder
+                .fromUriString(mapUrl)
+                .path(findPath)
+                .queryParam("start", "{start}")
+                .queryParam("goal", "{end}")
+                .queryParam("option", "{option}")
+                .encode()
+                .buildAndExpand(start, goal, option)
+                .toUri();
+
+        ResponseEntity<String> entity = restClient.get()
+                .uri(findPathUri)
+                .headers(headers -> {
+                    headers.add("X-NCP-APIGW-API-KEY-ID", clientId);
+                    headers.add("X-NCP-APIGW-API-KEY", clientSecret);
+                })
+                .accept(MediaType.APPLICATION_JSON)
+                .retrieve()
+                .toEntity(String.class);
+
+        return entity.getBody();
+    }
+
 
     private GeoLocation getGeoLocation(ResponseEntity<String> geoInfo) {
         JSONObject obj = new JSONObject(geoInfo.getBody());
@@ -71,13 +108,12 @@ public class MapService {
     }
 
     private URI getMapGeoUri(String addressWithoutPostalCode) {
-        URI mapGeoUri = UriComponentsBuilder
+        return UriComponentsBuilder
                 .fromUriString(mapUrl)
                 .path(geoPath)
                 .queryParam("query", "{query}")
                 .encode()
                 .buildAndExpand(addressWithoutPostalCode)
                 .toUri();
-        return mapGeoUri;
     }
 }
