@@ -45,6 +45,13 @@ public class JobController {
         return ResponseEntity.ok(jobInfoDto);
     }
 
+    @GetMapping("/job/{jobId}/homepage")
+    public ResponseEntity<Void> incrementHomePageViewCount(@PathVariable("jobId") String jobId) {
+
+        jobInfoService.incrementHomePageViewCount(jobId);
+        return ResponseEntity.ok(null);
+    }
+
     @GetMapping("/job")
     public ResponseEntity<List<JobInfoDto>> getNearJobs(@RequestParam(name = "x") String x,
             @RequestParam(name = "y") String y,
