@@ -17,7 +17,7 @@ public class GlobalControllerAdvice {
     }
 
     @ExceptionHandler
-    public ResponseEntity<?> stockExceptionHandler(JobInfoException e) {
+    public ResponseEntity<?> jobInfoExceptionHandler(JobInfoException e) {
 
         ErrorResponse errorResponse = new ErrorResponse(e.getStatus(),
                 e.getStatus().value(), e.getMessage());
