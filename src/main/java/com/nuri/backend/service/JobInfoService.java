@@ -5,9 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nuri.backend.domain.JobInfo;
 import com.nuri.backend.dto.JobInfoDto;
-import com.nuri.backend.dto.api.job.JobCustomResponse;
 import com.nuri.backend.dto.api.login.UserJobInfoDTO;
-import com.nuri.backend.entity.UserJobInfo;
 import com.nuri.backend.exception.ErrorCode;
 import com.nuri.backend.exception.JobInfoException;
 import com.nuri.backend.repository.JobInfoRepository;
@@ -30,17 +28,16 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class JobInfoService {
 
+    private final UserRepository userRepository;
     private final JobInfoRepository jobInfoRepository;
     private final UserJobInfoRepository userJobInfoRepository;
-    private final UserRepository userRepository;
 
     @Transactional(readOnly = true)
     public List<JobInfoDto> getPageJobs(Pageable pageable) {
-        List<JobInfoDto> jobInfoList = jobInfoRepository.findAll(pageable).stream()
+
+        return jobInfoRepository.findAll(pageable).stream()
                 .map(JobInfoDto::from)
                 .toList();
-
-        return jobInfoList;
     }
 
     @Transactional
@@ -52,9 +49,8 @@ public class JobInfoService {
     }
 
     @Transactional
-    public Void incrementHomePageViewCount(String jobId) {
+    public void incrementHomePageViewCount(String jobId) {
         jobInfoRepository.incrementHomePageViewCount(jobId);
-        return null;
     }
 
     @Transactional(readOnly = true)
