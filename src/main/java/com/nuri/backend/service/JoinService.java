@@ -30,6 +30,8 @@ public class JoinService {
         String username = joinDTO.getUsername();
         String password = joinDTO.getPassword();
 
+        System.out.println(password);
+
         List<UserJobInfoDTO> jobList = joinDTO.getUserJobInfoList();
 
         Boolean isExist = userRepository.existsByUsername(username);

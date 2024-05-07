@@ -56,7 +56,7 @@ public class SecurityConfig {
         httpSecurity
                 .authorizeHttpRequests((auth) -> auth
                         .requestMatchers("/login","/","/join").permitAll()
-                        .anyRequest().authenticated());
+                        .anyRequest().permitAll());
         httpSecurity
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
         httpSecurity

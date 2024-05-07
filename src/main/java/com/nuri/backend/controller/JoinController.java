@@ -4,6 +4,7 @@ import com.nuri.backend.dto.api.login.JoinDTO;
 import com.nuri.backend.service.JoinService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -17,7 +18,7 @@ public class JoinController {
     }
 
     @PostMapping("/join")
-    public String joinProcess(JoinDTO joinDTO) {
+    public String joinProcess(@RequestBody JoinDTO joinDTO) {
 
         System.out.println(joinDTO.getUsername());
         joinService.joinProcess(joinDTO);
