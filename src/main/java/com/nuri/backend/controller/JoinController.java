@@ -15,8 +15,8 @@ public class JoinController {
         this.joinService = joinService;
     }
 
-    @PostMapping(value = "/join", consumes = "application/x-www-form-urlencoded")
-    public String joinProcess(@ModelAttribute JoinDTO joinDTO) {
+    @PostMapping("/join")
+    public String joinProcess(@RequestBody JoinDTO joinDTO) {
         System.out.println("Username: " + joinDTO.getUsername());
         joinService.joinProcess(joinDTO);
         return "ok";
