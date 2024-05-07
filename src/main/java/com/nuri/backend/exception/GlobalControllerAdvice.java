@@ -26,4 +26,14 @@ public class GlobalControllerAdvice {
                 .status(e.getStatus())
                 .body(errorResponse);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<?> eduExceptionHandler(EduException e) {
+        ErrorResponse errorResponse = new ErrorResponse(e.getStatus(),
+                e.getStatus().value(), e.getMessage());
+
+        return ResponseEntity
+                .status(e.getStatus())
+                .body(errorResponse);
+    }
 }
