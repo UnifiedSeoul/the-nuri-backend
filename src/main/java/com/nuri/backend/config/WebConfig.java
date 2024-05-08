@@ -12,7 +12,7 @@ public class WebConfig implements WebMvcConfigurer {
         WebMvcConfigurer.super.addCorsMappings(registry);
         registry.addMapping("/**")
                 .allowedOrigins("http://localhost:3000", "http://the-nuri.com")
-                .allowedMethods("GET", "POST")
+                .allowedMethods("OPTIONS", "GET", "POST", "PUT", "DELETE")
                 .maxAge(3000);
     }
 }
