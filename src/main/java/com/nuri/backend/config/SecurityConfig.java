@@ -57,7 +57,7 @@ public class SecurityConfig {
                 .httpBasic((auth) -> auth.disable());
         httpSecurity
                 .authorizeHttpRequests((auth) -> auth
-//                        .requestMatchers("/api/jobs/custom").authenticated()
+                        .requestMatchers("/api/jobs/custom").authenticated()
                         .anyRequest().permitAll());
         httpSecurity
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
