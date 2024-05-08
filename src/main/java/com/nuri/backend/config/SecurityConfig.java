@@ -4,6 +4,7 @@ import com.nuri.backend.filter.JWTFilter;
 import com.nuri.backend.filter.LoginFilter;
 import com.nuri.backend.util.JWTUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -55,7 +56,7 @@ public class SecurityConfig {
                 .httpBasic((auth) -> auth.disable());
         httpSecurity
                 .authorizeHttpRequests((auth) -> auth
-                        .requestMatchers("/login","/","/join").permitAll()
+                        .requestMatchers("/api/jobs/custom").authenticated()
                         .anyRequest().permitAll());
         httpSecurity
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
@@ -72,9 +73,9 @@ public class SecurityConfig {
 
                         CorsConfiguration configuration = new CorsConfiguration();
 
-                        configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
-                        configuration.setAllowedMethods(Collections.singletonList("*"));
+                        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://the-nuri.com"));
                         configuration.setAllowCredentials(true);
+                        configuration.setAllowedMethods(Collections.singletonList("*"));
                         configuration.setAllowedHeaders(Collections.singletonList("*"));
                         configuration.setMaxAge(3600L);
 
