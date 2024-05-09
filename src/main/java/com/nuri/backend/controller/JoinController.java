@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Controller
 @ResponseBody
+@RequestMapping("/api")
 public class JoinController {
 
     private final JoinService joinService;
