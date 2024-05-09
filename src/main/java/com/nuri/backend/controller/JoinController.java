@@ -5,7 +5,7 @@ import com.nuri.backend.service.JoinService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/api")
 @ResponseBody
 public class JoinController {

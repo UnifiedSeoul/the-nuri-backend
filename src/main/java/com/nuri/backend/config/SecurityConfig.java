@@ -76,7 +76,7 @@ public class SecurityConfig {
 
                         configuration.setAllowCredentials(true);
                         configuration.setAllowedOrigins(
-                                List.of("http://localhost:3000", "http://www.the-nuri.com", "http://the-nuri.com"));
+                                List.of("http://localhost:3000", "http://www.the-nuri.com", "https://www.the-nuri.com"));
 
                         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"));
                         configuration.setAllowedHeaders(List.of("*"));
