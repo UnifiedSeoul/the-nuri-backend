@@ -6,8 +6,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @Controller
-@ResponseBody
 @RequestMapping("/api")
+@ResponseBody
 public class JoinController {
 
     private final JoinService joinService;
