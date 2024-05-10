@@ -3,6 +3,7 @@ package com.nuri.backend.controller;
 import com.nuri.backend.dto.JobInfoDto;
 import com.nuri.backend.dto.api.login.JoinDTO;
 import com.nuri.backend.service.JoinService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -36,7 +37,7 @@ public class JoinController {
             username = authentication.getName();
             return ResponseEntity.ok(username);
         }else {
-            return ResponseEntity.ok("error");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("error");
         }
     }
 }
