@@ -33,7 +33,7 @@ public class JobController {
     }
 
     @GetMapping("/jobs")
-    public ResponseEntity<List<JobInfoDto>> getPageJobs(@PageableDefault(page=1, size= 16, sort ="jobId",direction = Sort.Direction.DESC) Pageable pageable) {
+    public ResponseEntity<List<JobInfoDto>> getPageJobs(@PageableDefault(size= 16, sort ="acceptance.fromAcceptanceDate",direction = Sort.Direction.DESC) Pageable pageable) {
         List<JobInfoDto> jobInfoList = jobInfoService.getPageJobs(pageable);
         return ResponseEntity.ok(jobInfoList);
     }
