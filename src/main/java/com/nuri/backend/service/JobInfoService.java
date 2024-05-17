@@ -78,7 +78,7 @@ public class JobInfoService {
         List<JobInfoDto> customJob = new ArrayList<>();
 
         RestTemplate restTemplate = new RestTemplate();
-        String baseUrl = "http://3.38.116.43:5000/api/recommend";
+        String baseUrl = "http://13.125.219.196:5000/api/recommend";
 
         // HttpHeaders 객체 생성 및 설정
         HttpHeaders headers = new HttpHeaders();
